@@ -1,0 +1,23 @@
+#!/bin/bash
+
+function usage {
+	echo "USAGE: $(basename $0) command"
+	echo "    unset  : unsets proxy settings"
+	echo "    set url: sets the proxy to the url (http://<proxy>:<port>)"
+	exit 1
+}
+
+if [ $# -lt 1 ]; then
+	usage
+fi
+
+if [ "$1" == "unset" ]; then
+	unset $(env | grep -i proxy | cut -d= -f1)
+elif [ "$1" == "set" -a "$2" != "" ]; then
+	PROXY="$2"
+	export {http,https,ftp,socks}_proxy="${PROXY}"
+    export {HTTP,HTTPS,FTP,SOCKS}_PROXY="${PROXY}"
+	export NO_PROXY="localhost,127.0.0.1"
+fi
+
+exit 0
